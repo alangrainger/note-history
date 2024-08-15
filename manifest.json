@@ -1,6 +1,6 @@
 {
-	"id": "quartz-custom-publish",
-	"name": "Quartz publisher",
+	"id": "note-history",
+	"name": "Note History",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
 	"description": "",
