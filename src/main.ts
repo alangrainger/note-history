@@ -23,7 +23,7 @@ export default class MyPlugin extends Plugin {
         const res = this.db.exec('SELECT id FROM files WHERE path = ?', [file.path])
         const fileId = res[0].values[0][0]
         // Log the history event
-        this.db.run('INSERT INTO history (file_id, date, event) VALUES (?, ?, ?)', [fileId, this.now(), Events.openNote])
+        this.db.run('INSERT INTO history (files_id, date, event) VALUES (?, ?, ?)', [fileId, this.now(), Events.openNote])
         this.writeDb()
       }
     }))
@@ -43,10 +43,10 @@ export default class MyPlugin extends Plugin {
       this.db = new SQL.Database()
       // Create tables
       this.db.run('CREATE TABLE files (id INTEGER PRIMARY KEY, path TEXT UNIQUE NOT NULL)')
-      this.db.run('CREATE TABLE history (id INTEGER PRIMARY KEY, file_id INTEGER NOT NULL, date TEXT NOT NULL, event INTEGER NOT NULL)')
+      this.db.run('CREATE TABLE history (id INTEGER PRIMARY KEY, files_id INTEGER NOT NULL, date TEXT NOT NULL, event INTEGER NOT NULL)')
       // Indexes
       this.db.run('CREATE UNIQUE INDEX files_path ON files (path);')
-      this.db.run('CREATE INDEX history_file_id ON history (file_id);')
+      this.db.run('CREATE INDEX history_files_id ON history (files_id);')
       this.db.run('CREATE INDEX history_date ON history (date);')
       this.db.run('CREATE INDEX history_event ON history (event);')
       await this.writeDb()
