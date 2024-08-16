@@ -20,4 +20,8 @@ Here are the other options I tried and the issues:
 - [AlaSQL](https://github.com/AlaSQL/alasql)
   - Works, even on mobile, but you can only export the data to CSV and then import, which means
     that it would have to rebuild the indexes on every load.
-
+- [Dexie](https://dexie.org/)
+  - This is a NoSQL wrapper for IndexedDB. It would work on mobile, but the syntax to make
+    queries is not easy for the average person - especially things that are simple for SQL
+    like `GROUP BY`. Since I wanted to expose the ability for anyone to query their own data
+    (for example from a DataviewJS query), SQL is the better choice.
