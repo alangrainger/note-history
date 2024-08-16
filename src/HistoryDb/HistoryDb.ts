@@ -1,7 +1,8 @@
 import initSqlJs, { Database } from 'sql.js'
 import MyPlugin from '../main'
 import { App } from 'obsidian'
-import * as methods from './methods';
+import * as methods from './methods'
+import { SCHEMA } from './methods'
 
 export enum Events {
   openNote,
@@ -31,14 +32,20 @@ export class HistoryDb {
     } catch (e) {
       // No existing DB found, create a new one
       this.db = new SQL.Database()
-      // Create tables
-      this.db.run('CREATE TABLE files (id INTEGER PRIMARY KEY, path TEXT UNIQUE NOT NULL)')
-      this.db.run('CREATE TABLE history (id INTEGER PRIMARY KEY, files_id INTEGER NOT NULL, date TEXT NOT NULL, event INTEGER NOT NULL)')
-      // Indexes
-      this.db.run('CREATE UNIQUE INDEX files_path ON files (path);')
-      this.db.run('CREATE INDEX history_files_id ON history (files_id);')
-      this.db.run('CREATE INDEX history_date ON history (date);')
-      this.db.run('CREATE INDEX history_event ON history (event);')
+
+      Object.entries(SCHEMA).forEach(([table, tData]) => {
+        // Create tables
+        const columnSql = Object.entries(tData.columns)
+          .map(([column, cData]) => `${column} ${cData.type}`)
+          .join(', ')
+        this.db.run('CREATE TABLE ' + table + ' (' + columnSql + ')')
+
+        // Create indexes
+        Object.entries(tData.columns)
+          .forEach(([column, cData]) => {
+            this.db.run('CREATE ' + (cData.unique ? 'UNIQUE' : '') + ' INDEX ' + table + '_' + column + ' ON ' + table + ' (' + column + ')')
+          })
+      })
       await this.save()
     }
   }
@@ -47,11 +54,12 @@ export class HistoryDb {
 // Add methods
 Object.entries(methods).forEach(([name, method]) => {
   // @ts-ignore
-  HistoryDb.prototype[name] = method;
-});
+  HistoryDb.prototype[name] = method
+})
 
 // Add types
 type Methods = typeof methods;
 declare module './HistoryDb' {
-  interface HistoryDb extends Methods { }
+  interface HistoryDb extends Methods {
+  }
 }
