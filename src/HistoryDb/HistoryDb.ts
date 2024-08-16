@@ -34,6 +34,7 @@ export class HistoryDb {
       this.db = new SQL.Database()
 
       Object.entries(SCHEMA).forEach(([table, tData]) => {
+
         // Create tables
         const columnSql = Object.entries(tData.columns)
           .map(([column, cData]) => `${column} ${cData.type}`)
@@ -43,7 +44,10 @@ export class HistoryDb {
         // Create indexes
         Object.entries(tData.columns)
           .forEach(([column, cData]) => {
-            this.db.run('CREATE ' + (cData.unique ? 'UNIQUE' : '') + ' INDEX ' + table + '_' + column + ' ON ' + table + ' (' + column + ')')
+            if (!cData.type.includes('PRIMARY KEY')) {
+              // CREATE UNIQUE INDEX files_path ON files (path)
+              this.db.run('CREATE ' + (cData.unique ? 'UNIQUE' : '') + ' INDEX ' + table + '_' + column + ' ON ' + table + ' (' + column + ')')
+            }
           })
       })
       await this.save()
