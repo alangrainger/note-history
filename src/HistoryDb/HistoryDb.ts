@@ -6,8 +6,8 @@ import { SCHEMA } from './methods'
 
 export enum Events {
   openNote,
-  createNote,
-  editNote
+  // createNote,
+  // editNote
 }
 
 export class HistoryDb {
@@ -54,10 +54,15 @@ export class HistoryDb {
     }
   }
 
+  /**
+   * This is the function users will generally use to query the database.
+   *
+   * Since SQLite doesn't support stored procedures, we do a "text expansion" to
+   * simplify things for the user.
+   *
+   * If a user queries 'FROM all_data', we expand that to include all tables with joins.
+   */
   async query (sql: string, params?: BindParams) {
-    // Since SQLite doesn't support stored procedures, we do a "text expansion" to
-    // simplify things for the user.
-    // If a user queries 'FROM all_data', we expand that to include all tables with joins.
     const allQuery: string = `
       FROM history
       INNER JOIN files ON files.id = history.files_id`
