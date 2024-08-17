@@ -63,10 +63,10 @@ export class HistoryDb {
    * If a user queries 'FROM all_data', we expand that to include all tables with joins.
    */
   async query (sql: string, params?: BindParams) {
-    const allQuery: string = `
+    const allTables: string = `
       FROM history
       INNER JOIN files ON files.id = history.files_id`
-    sql = sql.replace(/\sFROM all_data\s/i, ` ${allQuery} `)
+    sql = sql.replace(/\sFROM all_data\s/i, ` ${allTables} `)
 
     return this.db.exec(sql, params)
   }
