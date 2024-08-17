@@ -1,6 +1,7 @@
 import { Plugin } from 'obsidian'
 import { DEFAULT_SETTINGS, MyPluginSettings } from './settings'
 import { HistoryDb } from './HistoryDb'
+import { BindParams } from 'sql.js'
 
 export default class MyPlugin extends Plugin {
   settings: MyPluginSettings
@@ -13,9 +14,7 @@ export default class MyPlugin extends Plugin {
     await this.history.initDatabase()
 
     this.registerEvent(this.app.workspace.on('file-open', (file) => {
-      if (file) {
-        this.history.trackNoteOpen(file)
-      }
+      if (file) this.history.trackNoteOpen(file)
     }))
   }
 
@@ -23,7 +22,12 @@ export default class MyPlugin extends Plugin {
     this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData())
   }
 
-  /* async saveSettings () {
+  async saveSettings () {
     await this.saveData(this.settings)
-  } */
+  }
+
+  /** Expose the query() function at the root level */
+  async query (sql: string, params?: BindParams) {
+    return this.history.query(sql, params)
+  }
 }

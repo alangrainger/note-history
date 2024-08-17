@@ -1,4 +1,4 @@
-import initSqlJs, { Database } from 'sql.js'
+import initSqlJs, { BindParams, Database } from 'sql.js'
 import MyPlugin from '../main'
 import { App } from 'obsidian'
 import * as methods from './methods'
@@ -52,6 +52,18 @@ export class HistoryDb {
       })
       await this.save()
     }
+  }
+
+  async query (sql: string, params?: BindParams) {
+    // Since SQLite doesn't support stored procedures, we do a "text expansion"
+    // to simplify things for the user.
+    // If a user queries 'FROM all_data', we expand that to include all tables with joins.
+    const allQuery: string = `
+      FROM history
+      INNER JOIN files ON files.id = history.files_id `
+    sql = sql.replace(/\sFROM all_data\s/i, allQuery)
+
+    return this.db.exec(sql, params)
   }
 }
 
