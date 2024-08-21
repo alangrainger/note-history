@@ -27,10 +27,11 @@ I chose to keep paths static in the database. When you move or rename a note, th
 
 Consider a vault set up like this:
 
-```  
-Projects  
-\--My Job  
-   \--Some Project\--Archive  
+```
+Projects
+\--My Job
+   \--Some Project
+\--Archive
 ```
 
 A great use for this plugin is finding out how much time you spend focused on various areas.
