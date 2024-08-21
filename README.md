@@ -36,4 +36,6 @@ Projects
 
 A great use for this plugin is finding out how much time you spend focused on various areas.
 
-Imagine you're doing metrics based on the folders you spend a lot of time in. When you finish working on `Some Project`, if you moved it to the `Archive` folder, and the Note History plugin renamed that path in the database, suddenly it would look like you're spending all your time in the `Archive`, rather than where you're really spending your time, which is `My Job`.
+Imagine you're doing metrics based on the folders you spend a lot of time in. When you finish working on `Some Project`, if you moved it to the `Archive` folder and the Note History plugin renamed that path in the database, suddenly it would look like you're spending all your time in the `Archive` rather than where you're really spending your time, which is `My Job`.
+
+If you're using Dataview for your queries, you can filter out non-existing paths very easily with `!!dv.page(somePath)`, which will be `true`/`false` depending whether the note exists.
